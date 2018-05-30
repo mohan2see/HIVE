@@ -514,8 +514,68 @@ MURALI  MECH    500000  1
 PONNU   MECH    500000  2
 
 
+**JOIN OPTIMIZATIONS IN HIVE**
+-------------------------------
+
+1.When more than two tables are joined, if the join column is same across tables in join condition, only one map-reduce job is allocated. Depends on the number of columns we join.
+2.When more than two tables are joined, the table thats joined last is kept on streaming record by record and stays at hdfs. Other tables records are pulled into memory. Its important to keep largest size table as last table in join to improve performance.
+3.To force hive to stream a particular table we can use the /*+ STREAMTABLE(ALUMNI) =*/ function.
+
+Ex: EMPLOYEE - 5MB
+    DEPT - 100MB
+    ALUMNI - 1GB
+
+    --it is better to keep the largest table(alumni) in the last join condition
+
+CREATE TEMPORARY TABLE EMPLOYEE
+ (
+   ID INT,
+   NAME VARCHAR(100),
+   DEPT_ID INT
+ );
 
 
+CREATE TEMPORARY TABLE DEPT
+ (
+  ID INT,
+  NAME VARCHAR(100)
+ );
+
+
+CREATE TEMPORARY TABLE ALUMNI
+ (
+  EMP_NAME VARCHAR(100),
+  YEAR DATE
+ );
+
+INSERT INTO EMPLOYEE VALUES(1,'MOHANRAM',1);
+INSERT INTO DEPT VALUES(1,'MECHANICAL'); 
+INSERT INTO ALUMNI VALUES('MOHANRAM','2011-01-01');
+
+
+SELECT EMPLOYEE.NAME,DEPT.NAME,YEAR(ALUMNI.YEAR)
+FROM
+EMPLOYEE JOIN DEPT ON (EMPLOYEE.DEPT_ID=DEPT.ID)
+JOIN ALUMNI ON (ALUMNI.EMP_NAME=EMPLOYEE.NAME); 
+
+--STREAMTABLE FUNCTION. Here eventhough alumni table is not joined in last, this is forcefully streamed and not brought to memory, which improves performance.
+
+SELECT /*+ STREAMTABLE(ALUMNI) */ EMPLOYEE.NAME,DEPT.NAME,YEAR(ALUMNI.YEAR)
+FROM
+EMPLOYEE JOIN ALUMNI ON (ALUMNI.EMP_NAME=EMPLOYEE.NAME)
+JOIN DEPT ON (EMPLOYEE.DEPT_ID=DEPT.ID);
+
+
+--Output
+MOHANRAM        MECHANICAL      2011
+
+
+
+--LEFT SEMI JOIN
+1. To get  all records from left table where matching column in right table.
+2.Generally used to replace "EXISTS" in sql. with exists clause, only one column can be specified. With left semi join, multiple conditions can be specified.
+
+Refer to Joins Explained.sql file.
 
 
 
