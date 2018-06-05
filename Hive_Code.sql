@@ -574,7 +574,7 @@ MOHANRAM        MECHANICAL      2011
 --LEFT SEMI JOIN
 1. To get  all records from left table where matching column in right table.
 2.Generally used to replace "EXISTS" in sql. with exists clause, only one column can be specified. With left semi join, multiple conditions can be specified.
-
+3. With left semi join, only matching records are scanned in table 2. But with exists clause, entire table is scanned. Improves performance.
 Refer to Joins Explained.sql file.
 
 
