@@ -1,0 +1,42 @@
+If you want to perform "yum update" then temporarily disable the sandbox.repo by setting the "enabled=0" inside the file "/etc/yum.repos.d/sandbox.repo" as following:
+
+# cat /etc/yum.repos.d/sandbox.repo 
+[sandbox]
+baseurl=http://dev2.hortonworks.com.s3.amazonaws.com/repo/dev/master/utils/
+name=Sandbox repository (tutorials)
+gpgcheck=0
+enabled=0
+After setting the "enabled=0" in the above file perform a yum clean and then try the update again.
+
+# yum clean all
+# yum update
+
+
+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+
+Hive Error in Hortonworks:
+
+error: Failure while running task:java.lang.RuntimeException: java.lang.OutOfMemoryError: Java heap space
+
+
+increase the tez container size and java opts, something like this:
+
+set hive.tez.container.size=2048;
+
+set hive.tez.java.opts=-Xmx1700m;
+
+(above is ~ 0.8 x tez container size)
+
+
+
+
+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+pip mrjob error
+
+pip install mrjob==0.5.11
+
+
+
+
