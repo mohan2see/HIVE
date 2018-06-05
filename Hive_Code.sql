@@ -199,6 +199,9 @@ hadoop fs -cp /user/mohan/employee /user/mohan/
 #to remove a file
 hadoop fs -rm /user/mohan/employee/employee.txt
 
+#to remove a dir
+hadoop fs -rmdir /user/mohan/employee
+
 
 #Run hive queries from file or outside
 hive -e "select * from employee";
